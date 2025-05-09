@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Laporan Status Gizi</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>Laporan Status Gizi</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Nama Balita</th>
+                <th>Tanggal Pengukuran</th>
+                <th>Berat Badan</th>
+                <th>Tinggi Badan</th>
+                <th>Lingkar Lengan</th>
+                <th>Status Gizi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data or [] %}
+            <tr>
+                <td>{{ item['nama']|default('') }}</td>
+                <td>{{ item['tanggal_ukur']|default('') }}</td>
+                <td>{{ item['berat_badan']|default('') }} kg</td>
+                <td>{{ item['tinggi_badan']|default('') }} cm</td>
+                <td>{{ item['lingkar_lengan']|default('') }} cm</td>
+                <td>{{ item['status_gizi']|default('') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

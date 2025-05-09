@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Manajemen Parameter Sistem</h2>
+    
+    <!-- Form Parameter KNN -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Parameter KNN-LVQ</h5>
+            <form method="POST" action="{{ url_for('update_parameter') }}">
+                <div class="row g-3">
+                    <!-- Input Nilai K -->
+                    <div class="col-md-3">
+                        <label for="nilai_k" class="form-label">Nilai K</label>
+                        <input type="number" class="form-control" id="nilai_k" 
+                               name="nilai_k" value="{{ params.nilai_k }}" min="1" required>
+                    </div>
+                    
+                    <!-- Input Bobot -->
+                    <div class="col-md-3">
+                        <label for="bobot_berat" class="form-label">Bobot Berat Badan</label>
+                        <input type="number" step="0.01" class="form-control" 
+                               id="bobot_berat" name="bobot_berat" 
+                               value="{{ params.bobot_berat }}" required>
+                    </div>
+                    
+                    <!-- Input bobot lainnya -->
+                    <div class="col-md-3">
+                        <label for="bobot_tinggi" class="form-label">Bobot Tinggi Badan</label>
+                        <input type="number" step="0.01" class="form-control" 
+                               id="bobot_tinggi" name="bobot_tinggi" 
+                               value="{{ params.bobot_tinggi }}" required>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label for="bobot_lila" class="form-label">Bobot Lingkar Lengan</label>
+                        <input type="number" step="0.01" class="form-control" 
+                               id="bobot_lila" name="bobot_lila" 
+                               value="{{ params.bobot_lila }}" required>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label for="bobot_umur" class="form-label">Bobot Umur</label>
+                        <input type="number" step="0.01" class="form-control" 
+                               id="bobot_umur" name="bobot_umur" 
+                               value="{{ params.bobot_umur }}" required>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label for="bobot_jk" class="form-label">Bobot Jenis Kelamin</label>
+                        <input type="number" step="0.01" class="form-control" 
+                               id="bobot_jk" name="bobot_jk" 
+                               value="{{ params.bobot_jk }}" required>
+                    </div>
+                </div>
+                
+                <!-- Validasi Total Bobot -->
+                <div class="alert alert-info mt-3">
+                    Total Bobot: <span id="total-bobot">
+                    {{ params.bobot_berat + params.bobot_tinggi + 
+                       params.bobot_lila + params.bobot_umur + params.bobot_jk }}
+                    </span>
+                    (Harus tepat 1.0)
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Riwayat Perubahan -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title">Riwayat Perubahan</h5>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Waktu</th>
+                            <th>Pengubah</th>
+                            <th>Nilai K</th>
+                            <th>Total Bobot</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in history %}
+                        <tr>
+                            <td>{{ log.changed_at|datetime_format }}</td>
+                            <td>{{ log.username }}</td>
+                            <td>{{ log.nilai_k }}</td>
+                            <td>{{ (log.bobot_berat + log.bobot_tinggi + log.bobot_lila + log.bobot_umur + log.bobot_jk)|round(2) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script Validasi Bobot -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const bobotInputs = document.querySelectorAll('input[name^="bobot_"]');
+    
+    function hitungTotal() {
+        let total = 0;
+        bobotInputs.forEach(input => {
+            total += parseFloat(input.value) || 0;
+        });
+        document.getElementById('total-bobot').textContent = total.toFixed(2);
+    }
+    
+    bobotInputs.forEach(input => {
+        input.addEventListener('input', hitungTotal);
+    });
+});
+</script>
+{% endblock %}

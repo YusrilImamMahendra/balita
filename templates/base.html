@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Pendekteksi Gizi{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f8f9fa;
+        }
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background: #fff;
+            border-right: 1px solid #dee2e6;
+            z-index: 1000;
+            transition: width 0.2s;
+            width: 220px;
+        }
+        .sidebar.collapsed {
+            width: 64px;
+        }
+        .sidebar .sidebar-toggler {
+            background: none;
+            border: none;
+            color: #333;
+            width: 100%;
+            text-align: right;
+            padding: 0.5rem 1rem;
+            font-size: 1.25rem;
+        }
+        .sidebar .nav-link {
+            color: #333;
+            white-space: nowrap;
+            transition: background 0.2s;
+        }
+        .sidebar .nav-link.active {
+            background: #e9ecef;
+            font-weight: bold;
+        }
+        .sidebar .nav-link i {
+            margin-right: 8px;
+            font-size: 1.25rem;
+            vertical-align: middle;
+        }
+        .sidebar.collapsed .nav-link span {
+            display: none;
+        }
+        .sidebar.collapsed .sidebar-title {
+            display: none;
+        }
+        .sidebar .sidebar-title {
+            margin-left: 10px;
+            font-weight: bold;
+            font-size: 1.15rem;
+        }
+        main {
+            margin-left: 220px;
+            padding-top: 1rem;
+            transition: margin-left 0.2s;
+        }
+        .sidebar.collapsed + main {
+            margin-left: 64px;
+        }
+        @media (max-width: 991.98px) {
+            .sidebar {
+                position: relative;
+                height: auto;
+                border-right: none;
+                width: 100% !important;
+            }
+            .sidebar.collapsed {
+                width: 100% !important;
+            }
+            main {
+                margin-left: 0 !important;
+            }
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Sidebar -->
+    {% if session.get('user_id') %}
+    <div class="sidebar d-none d-md-block col-md-2 p-0" id="sidebar">
+        <div class="py-3 px-3 border-bottom d-flex align-items-center justify-content-between">
+            <span class="sidebar-title">Pendekteksi Gizi</span>
+            <button class="sidebar-toggler" id="sidebarToggler" title="Kecilkan/Perbesar Menu" type="button">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+        </div>
+        <ul class="nav flex-column pt-2">
+            <li class="nav-item"><a class="nav-link {% if request.endpoint=='dashboard' %}active{% endif %}" href="{{ url_for('dashboard') }}"><i class="bi bi-house-fill"></i> <span>Dashboard</span></a></li>
+            <li class="nav-item"><a class="nav-link {% if request.endpoint=='kelola_user' %}active{% endif %}" href="{{ url_for('kelola_user') }}"><i class="bi bi-people-fill"></i> <span>Kelola User</span></a></li>
+            <li class="nav-item"><a class="nav-link {% if request.endpoint=='data_balita' %}active{% endif %}" href="{{ url_for('data_balita') }}"><i class="bi bi-journal"></i> <span>Data Balita</span></a></li>
+            <li class="nav-item"><a class="nav-link {% if request.endpoint=='data_pengukuran' %}active{% endif %}" href="{{ url_for('data_pengukuran') }}"><i class="bi bi-calculator"></i> <span>Pengukuran</span></a></li>
+            <li class="nav-item"><a class="nav-link {% if request.endpoint=='parameter' %}active{% endif %}" href="{{ url_for('parameter') }}"><i class="bi bi-sliders2-vertical"></i> <span>Parameter KNN</span></a></li>
+            <li class="nav-item"><a class="nav-link {% if request.endpoint=='upload_balita_pengukuran' %}active{% endif %}" href="{{ url_for('upload_balita_pengukuran') }}"><i class="bi bi-cloud-arrow-up-fill"></i> <span>Unggah File</span></a></li>
+            <li class="nav-item"><a class="nav-link {% if request.endpoint=='laporan' %}active{% endif %}" href="{{ url_for('laporan') }}"><i class="bi bi-file-earmark-text-fill"></i> <span>Laporan</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}"><i class="bi bi-power"></i> <span>Keluar</span></a></li>
+        </ul>
+    </div>
+    {% endif %}
+    <!-- Main Content -->
+    <main class="col-md-10 ms-sm-auto px-4">
+        <!-- Top bar -->
+        <div class="d-flex justify-content-between align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <div>
+                <span class="fs-5 fw-bold">{% block page_title %}{% endblock %}</span>
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="me-2 text-uppercase">{{ session['role'] if session['role'] else '' }}</span>
+                <i class="bi bi-person-circle fs-4"></i>
+            </div>
+        </div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="container">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sidebar collapse/expand
+        const sidebar = document.getElementById('sidebar');
+        const toggler = document.getElementById('sidebarToggler');
+        let collapsed = false;
+
+        toggler.addEventListener('click', function() {
+            collapsed = !collapsed;
+            sidebar.classList.toggle('collapsed', collapsed);
+
+            // Toggle icon direction
+            const icon = toggler.querySelector('i');
+            icon.classList.toggle('bi-chevron-left', !collapsed);
+            icon.classList.toggle('bi-chevron-right', collapsed);
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

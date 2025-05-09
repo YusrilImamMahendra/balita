@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Unggah Dataset</h2>
+    <form action="{{ url_for('upload_dataset') }}" method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="file" class="form-label">Pilih File CSV</label>
+            <input type="file" class="form-control" id="file" name="file" accept=".csv" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Unggah</button>
+    </form>
+</div>
+{% endblock %}

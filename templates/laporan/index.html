@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <!-- Filter -->
+    <div class="d-flex justify-content-between mb-4">
+        <h2>Laporan Status Gizi</h2>
+        <div>
+            <a href="{{ url_for('laporan_pdf') }}" class="btn btn-danger">
+                <i class="fas fa-file-pdf"></i> Ekspor PDF
+            </a>
+            <a href="{{ url_for('laporan_excel') }}" class="btn btn-success">
+                <i class="fas fa-file-excel"></i> Ekspor Excel
+            </a>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="GET" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Periode Mulai</label>
+                    <input type="date" name="start_date" class="form-control">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Periode Akhir</label>
+                    <input type="date" name="end_date" class="form-control">
+                </div>
+                <div class="col-md-2 align-self-end">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Grafik -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">
+                <i class="fas fa-chart-line"></i> Trend Status Gizi
+            </h5>
+            <canvas id="trendChart" height="100"></canvas>
+        </div>
+    </div>
+    
+    <!-- Tabel Data -->
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between mb-3">
+                <h5 class="card-title">
+                    <i class="fas fa-table"></i> Data Detail
+                </h5>
+                <a href="{{ url_for('cetak_laporan') }}" class="btn btn-success">
+                    <i class="fas fa-print"></i> Cetak Laporan
+                </a>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Nama Balita</th>
+                            <th>Tanggal Pengukuran</th>
+                            <th>Status Gizi</th>
+                            <th>Berat Badan</th>
+                            <th>Tinggi Badan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in data or [] %}
+<tr>
+    <td>{{ item.nama|default('') }}</td>
+    <td>{{ item.tanggal_ukur|default('') }}</td>
+    <td>
+        <span class="badge bg-{{ item.status_color|default('secondary') }}">
+            {{ item.status_gizi|default('') }}
+        </span>
+    </td>
+    <td>{{ item.berat_badan|default('') }} kg</td>
+    <td>{{ item.tinggi_badan|default('') }} cm</td>
+</tr>
+{% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Implementasi grafik
+    const ctx = document.getElementById('trendChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {{ (chart_data or {})|tojson }},
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %}
