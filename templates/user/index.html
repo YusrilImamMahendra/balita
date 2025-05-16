@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Kelola User</h2>
+    <a href="{{ url_for('tambah_user') }}" class="btn btn-primary mb-3">Tambah User</a>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for cat, msg in messages %}
+        <div class="alert alert-{{cat}}">{{msg}}</div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Username</th>
+                <th>Nama Lengkap</th>
+                <th>Role</th>
+                <th>Created</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.nama_lengkap }}</td>
+                <td>{{ user.role }}</td>
+                <td>{{ user.created_at }}</td>
+                <td>
+                    <a href="{{ url_for('edit_user', id=user.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                    <form action="{{ url_for('hapus_user', id=user.id) }}" method="post" style="display:inline;" onsubmit="return confirm('Hapus user?')">
+                        <button class="btn btn-sm btn-danger" type="submit">Hapus</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

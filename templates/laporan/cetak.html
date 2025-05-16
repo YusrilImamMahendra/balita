@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Cetak Laporan Data Pengukuran Balita</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        h2 { text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #333; padding: 8px; text-align: center; }
+        th { background-color: #f2f2f2; }
+        @media print {
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="no-print" style="margin-bottom:16px;">
+        <button onclick="window.print();">Cetak</button>
+        <a href="{{ url_for('laporan') }}">Kembali</a>
+    </div>
+    <h2>Laporan Data Pengukuran Balita</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Nama Balita</th>
+                <th>Tanggal Ukur</th>
+                <th>Berat Badan (kg)</th>
+                <th>Tinggi Badan (cm)</th>
+                <th>Lingkar Lengan (cm)</th>
+                <th>Status Gizi</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for row in data or [] %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ row.nama|default('') }}</td>
+                <td>{{ row.tanggal_ukur|default('') }}</td>
+                <td>{{ row.berat_badan|default('') }}</td>
+                <td>{{ row.tinggi_badan|default('') }}</td>
+                <td>{{ row.lingkar_lengan|default('') }}</td>
+                <td>{{ row.status_gizi|default('') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between mb-4">
+        <h2>Laporan Status Gizi</h2>
+        <a href="{{ url_for('cetak_laporan') }}" class="btn btn-success">
+            <i class="bi bi-printer-fill"></i> Cetak Laporan
+        </a>
+    </div>
+
+    <!-- Filter Tanggal -->
+    <form method="GET" class="row g-3 mb-4">
+        <div class="col-md-3">
+            <label class="form-label">Dari Tanggal</label>
+            <input type="date" name="start_date" class="form-control" 
+                   value="{{ request.args.get('start_date', '') }}">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Sampai Tanggal</label>
+            <input type="date" name="end_date" class="form-control"
+                   value="{{ request.args.get('end_date', '') }}">
+        </div>
+        <div class="col-md-2 align-self-end">
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </div>
+    </form>
+
+    <!-- Grafik dan Tabel -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Trend 6 Bulan Terakhir</h5>
+                    <canvas id="trendChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Distribusi Status</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Status Gizi</th>
+                                    <th>Jumlah</th>
+                                    <th>Persentase</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in distribusi or [] %}
+                                <tr>
+                                    <td>{{ item.status|capitalize }}</td>
+                                    <td>{{ item.jumlah }}</td>
+                                    <td>{{ (item.jumlah/(total_pengukuran or 1)*100)|round(2) }}%</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script Chart -->
+<script>
+    const trendData = {
+        labels: {{ (labels or [])|tojson }},
+        datasets: [
+            {% for status in datasets or [] %}
+            {
+                label: '{{ status.label|default("") }}',
+                data: {{ (status.data or [])|tojson }},
+                borderColor: '{{ status.color|default("#000") }}',
+                backgroundColor: '{{ status.color|default("#000") }}22',
+                fill: true
+            },
+            {% endfor %}
+        ]
+    };
+    
+    new Chart(
+        document.getElementById('trendChart'),
+        {
+            type: 'line',
+            data: trendData,
+            options: { responsive: true }
+        }
+    );
+</script>
+{% endblock %}

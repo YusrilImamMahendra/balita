@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Pendeteksi Gizi</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <div class="form-container" id="form-container">
+            <!-- Tombol Kembali -->
+                    <a href="{{ url_for('home') }}" class="back-to-home">
+            <div class="arrow-circle">
+                <span class="arrow-left"></span>
+            </div>
+        </a>
+            
+            <!-- Login Form -->
+            <form id="login-form" method="POST" action="{{ url_for('login') }}" class="form {% if request.path == '/login' or not request.path == '/register' %}active{% endif %}">
+                <h2 class="form-title">LOGIN</h2>
+                <input type="hidden" name="form_type" value="login">
+                <input type="text" name="username" placeholder="Nama Pengguna" required>
+                <div class="password-wrapper">
+                    <input type="password" name="password" placeholder="Kata Sandi" required id="password-login">
+                    <span class="toggle-password" toggle="#password-login">&#128065;</span>
+                </div>
+                <button type="submit">Login</button>
+                <p>Belum punya akun? <a href="#" id="show-register">Registrasi</a></p>
+            </form>
+
+            <!-- Register Form -->
+            <form id="register-form" method="POST" action="{{ url_for('register') }}" class="form {% if request.path == '/register' %}active{% endif %}">
+                <h2 class="form-title">Registrasi</h2>
+                <input type="hidden" name="form_type" value="register">
+                <input type="text" name="username" placeholder="Nama Pengguna" required>
+                <div class="password-wrapper">
+                    <input type="password" name="password" placeholder="Kata Sandi" required id="password-register">
+                    <span class="toggle-password" toggle="#password-register">&#128065;</span>
+                </div>
+                <input type="text" name="nama_lengkap" placeholder="Nama Lengkap" required>
+                <button type="submit">Registrasi</button>
+                <p>Sudah punya akun? <a href="#" id="show-login">Login</a></p>
+            </form>
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul class="messages">
+            {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+</body>
+
+</html>
