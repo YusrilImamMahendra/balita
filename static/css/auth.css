@@ -1,0 +1,208 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #040110;
+    min-height: 100vh;
+    position: relative;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: url('../img/Kesehatan.png') no-repeat center center;
+    background-size: cover;
+    opacity: 0.15;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Tombol Kembali */
+.back-to-home {
+    display: inline-block;
+    margin-bottom: 20px;
+    text-decoration: none;
+    position: relative;
+    z-index: 10;
+}
+
+.arrow-circle {
+    width: 40px;
+    height: 40px;
+    background-color: black; /* Warna lingkaran */
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.arrow-left {
+    display: block;
+    width: 12px;
+    height: 12px;
+    border-top: 2px solid white; /* Warna panah */
+    border-left: 2px solid white; /* Warna panah */
+    transform: rotate(-45deg); /* Rotasi panah ke kiri */
+    position: absolute;
+    left: 12px;
+}
+
+.container {
+    width: 100%;
+    max-width: 340px;
+    margin: 60px auto;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 32px #b6b3d4;
+    overflow: hidden;
+    padding: 32px 24px;
+    position: relative;
+    z-index: 1;
+}
+
+.form-container {
+    position: relative;
+    width: 100%;
+    min-height: 400px;
+    overflow: hidden;
+}
+
+.form {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    transition: transform 0.4s cubic-bezier(.68, -0.55, .27, 1.55);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.form.active {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 2;
+}
+
+#register-form {
+    transform: translateX(100%);
+}
+
+#register-form.active {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 2;
+}
+
+#login-form {
+    transform: translateX(0);
+}
+
+#login-form:not(.active) {
+    transform: translateX(-100%);
+}
+
+.form-title {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 2rem; /* Tambahkan jarak untuk lebih rapi */
+    font-size: 1.5rem;
+    color: #333;
+}
+
+input[type="text"], input[type="email"], input[type="password"] {
+    width: 100%;
+    margin: 16px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-wrapper input[type="password"],
+.password-wrapper input[type="text"] {
+    padding-right: 38px;
+}
+
+.toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 18px;
+    color: #888;
+    user-select: none;
+    transition: color 0.2s;
+}
+
+.toggle-password.active {
+    color: #14b102;
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background: #14b102;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 17px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+button[type="submit"]:hover {
+    background: #14b102;
+}
+
+p {
+    margin-top: 12px;
+    text-align: center;
+}
+
+a {
+    color: #14b102;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.messages {
+    margin: 10px 0 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.messages li {
+    margin: 0;
+    padding: 8px 10px;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 14px;
+}
+
+.messages li.success {
+    background: #4caf50;
+}
+
+.messages li.danger {
+    background: #e74c3c;
+}
+
+
+@media (max-width: 400px) {
+    .container {
+        padding: 20px 6px;
+    }
+}
