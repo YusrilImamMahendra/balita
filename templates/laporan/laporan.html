@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Filter Tanggal -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form id="filterForm" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Dari Tanggal</label>
+                    <input type="date" name="start_date" class="form-control" required>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Sampai Tanggal</label>
+                    <input type="date" name="end_date" class="form-control" required>
+                </div>
+                <div class="col-md-2 align-self-end">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-filter"></i> Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Grafik Trend -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Trend Status Gizi</h5>
+            <div class="chart-container" style="position: relative; height:50vh; width:100%">
+                <canvas id="trendChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Hasil Filter -->
+    <div id="dataHasilFilter" style="display: none;">
+        <div class="d-flex justify-content-between mb-4">
+            <h2>Data Pengukuran <span id="periodeTerpilih"></span></h2>
+            <div>
+                <a href="#" id="exportPDF" class="btn btn-danger">
+                    <i class="fas fa-file-pdf"></i> Ekspor PDF
+                </a>
+                <a href="#" id="exportExcel" class="btn btn-success">
+                    <i class="fas fa-file-excel"></i> Ekspor Excel
+                </a>
+                <a href="#" id="printReport" class="btn btn-success">
+                    <i class="bi bi-printer-fill"></i> Cetak Laporan
+                </a>
+            </div>
+        </div>
+
+        <!-- Tabel Hasil Filter -->
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>NIK</th>
+                                <th>Nama Balita</th>
+                                <th>Tanggal Ukur</th>
+                                <th>Berat Badan (kg)</th>
+                                <th>Tinggi Badan (cm)</th>
+                                <th>Lingkar Lengan (cm)</th>
+                                <th>Status Gizi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dataTable">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Awal -->
+    <div id="dataAwal">
+        <div class="d-flex justify-content-between mb-4">
+            <h2>Data Pengukuran</h2>
+        </div>
+
+        <!-- Tabel Data Awal -->
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>NIK</th>
+                                <th>Nama Balita</th>
+                                <th>Tanggal Ukur</th>
+                                <th>Berat Badan (kg)</th>
+                                <th>Tinggi Badan (cm)</th>
+                                <th>Lingkar Lengan (cm)</th>
+                                <th>Status Gizi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in data %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ row.nik }}</td>
+                                <td>{{ row.nama }}</td>
+                                <td>{{ row.tanggal_ukur }}</td>
+                                <td>{{ row.berat_badan }}</td>
+                                <td>{{ row.tinggi_badan }}</td>
+                                <td>{{ row.lingkar_lengan }}</td>
+                                <td>{{ row.status_gizi }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Data awal dari server
+    const initialTrendData = {
+        labels: {{ labels|tojson|safe }},
+        datasets: [
+            {% for status in datasets %}
+            {
+                label: '{{ status.label }}',
+                data: {{ status.data|tojson|safe }},
+                borderColor: '{{ status.color }}',
+                backgroundColor: '{{ status.color }}',
+            }{% if not loop.last %},{% endif %}
+            {% endfor %}
+        ]
+    };
+
+    // Inisialisasi Chart
+    const ctx = document.getElementById('trendChart').getContext('2d');
+    const trendChart = new Chart(ctx, {
+        type: 'line',
+        data: initialTrendData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // Handle form submit
+    document.getElementById('filterForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+    
+        const startDate = document.querySelector('input[name="start_date"]').value;
+        const endDate = document.querySelector('input[name="end_date"]').value;
+    
+    // Update URL tombol export
+        const baseUrl = window.location.pathname;
+        document.getElementById('exportPDF').href = `${baseUrl}/pdf?start_date=${startDate}&end_date=${endDate}`;
+        document.getElementById('exportExcel').href = `${baseUrl}/excel?start_date=${startDate}&end_date=${endDate}`;
+        document.getElementById('printReport').href = `${baseUrl}/cetak?start_date=${startDate}&end_date=${endDate}`;
+    
+    // Ambil data
+        fetch(`${baseUrl}/data?start_date=${startDate}&end_date=${endDate}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(response => {
+            if (response.error) {
+                throw new Error(response.error);
+            }
+            
+            // Format periode untuk judul
+            const start = new Date(startDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            const end = new Date(endDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            document.getElementById('periodeTerpilih').textContent = `(${start} - ${end})`;
+            
+            // Update chart dengan data baru
+            trendChart.data.labels = response.chart_data.labels;
+            trendChart.data.datasets = response.chart_data.datasets;
+            trendChart.update();
+            
+            // Tampilkan data dalam tabel
+            const tbody = document.getElementById('dataTable');
+            tbody.innerHTML = '';
+            
+            response.table_data.forEach((item, index) => {
+                const date = new Date(item.tanggal_ukur).toLocaleDateString('id-ID');
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${item.nik || '-'}</td>
+                        <td>${item.nama}</td>
+                        <td>${date}</td>
+                        <td>${item.berat_badan}</td>
+                        <td>${item.tinggi_badan}</td>
+                        <td>${item.lingkar_lengan}</td>
+                        <td>${item.status_gizi}</td>
+                    </tr>
+                `;
+            });
+            
+            // Tampilkan hasil filter dan sembunyikan data awal
+            document.getElementById('dataHasilFilter').style.display = 'block';
+            document.getElementById('dataAwal').style.display = 'none';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat mengambil data: ' + error.message);
+        });
+});
+</script>
+{% endblock %}

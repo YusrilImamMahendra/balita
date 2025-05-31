@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Laporan Status Gizi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        h2, .periode {
+            text-align: center;
+        }
+        .periode {
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>Laporan Status Gizi</h2>
+    
+    {% if start_date or end_date %}
+    <div class="periode">
+        Periode: 
+        {% if start_date and end_date %}
+            {{ start_date }} sampai {{ end_date }}
+        {% elif start_date %}
+            Dari tanggal {{ start_date }}
+        {% else %}
+            Sampai tanggal {{ end_date }}
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>NIK Balita</th>
+                <th>Nama Balita</th>
+                <th>Tanggal Pengukuran</th>
+                <th>Berat Badan</th>
+                <th>Tinggi Badan</th>
+                <th>Lingkar Lengan</th>
+                <th>Status Gizi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data or [] %}
+            <tr>
+                <td>{{ item.nik }}</td>
+                <td>{{ item.nama }}</td>
+                <td>{{ item.tanggal_ukur }}</td>
+                <td>{{ item.berat_badan }} kg</td>
+                <td>{{ item.tinggi_badan }} cm</td>
+                <td>{{ item.lingkar_lengan }} cm</td>
+                <td>{{ item.status_gizi }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

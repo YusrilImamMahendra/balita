@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Kelola Dataset Training</h2>
+  <a href="{{ url_for('tambah_dataset_training') }}" class="btn btn-success mb-2">Tambah Data Training</a>
+  <a href="{{ url_for('unggah_dataset_training') }}" class="btn btn-primary mb-2">Unggah Dataset </a>
+  <form action="{{ url_for('hapus_semua_dataset_training') }}" method="post" style="display:inline;" onsubmit="return confirm('Yakin ingin menghapus SEMUA data training?');">
+    <button type="submit" class="btn btn-danger mb-2">Hapus Semua Dataset</button>
+  </form>
+  <table class="table table-bordered mt-3">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>Berat Badan (kg)</th>
+        <th>Tinggi Badan (cm)</th>
+        <th>LILA (cm)</th>
+        <th>Status Gizi</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in data %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ row['feature1']|round(2) }}</td>
+        <td>{{ row['feature2']|round(2) }}</td>
+        <td>{{ row['feature3']|round(2) }}</td>
+        <td>{{ row['target'] }}</td>
+        <td>
+          <form action="{{ url_for('hapus_dataset_training', id=row['id']) }}" method="post" style="display:inline;" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
+            <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="6" class="text-center">Belum ada data training.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

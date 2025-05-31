@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Data Pengukuran</h2>
+    <a href="{{ url_for('tambah_pengukuran') }}" class="btn btn-primary mb-3">
+        <i class="fas fa-plus"></i> Tambah Data
+    </a>
+<form method="GET" class="mb-3">
+    <div class="row">
+        <div class="col-md-4">
+            <input type="text" class="form-control" name="nama_balita" placeholder="Cari Nama Balita" value="{{ request.args.get('nama_balita', '') }}">
+        </div>
+        <div class="col-md-4 mt-2">
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </div>
+    </div>
+</form>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>No</th>
+                    <th>NIK Balita</th>
+                    <th>Nama Balita</th>
+                    <th>Tanggal Ukur</th>
+                    <th>Berat (kg)</th>
+                    <th>Tinggi (cm)</th>
+                    <th>LILA (cm)</th>
+                    <th>Status Gizi</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in pengukuran %}
+                <tr>
+                    <td>{{ loop.index + (page - 1) * 50 }}</td>
+                    <td>{{ p.nik_balita }}</td>
+                    <td>{{ p.nama_balita }}</td>
+                    <td>{{ p.tanggal_ukur }}</td>
+                    <td>{{ "%.1f"|format(p.berat_badan) }}</td>
+                    <td>{{ "%.1f"|format(p.tinggi_badan) }}</td>
+                    <td>{{ "%.1f"|format(p.lingkar_lengan) }}</td>
+                    <td>
+                        {% if p.status_gizi %}
+                            <span class="badge rounded-pill bg-{{ 
+                                'success' if p.status_gizi == 'normal' else
+                                'warning' if p.status_gizi == 'kurang' else
+                                'danger' if p.status_gizi == 'buruk' else
+                                'info' }}">
+                                {{ p.status_gizi|capitalize }}
+                            </span>
+                        {% else %}
+                            <span class="badge bg-secondary">Belum diperiksa</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('edit_pengukuran', id=p.id) }}" 
+                           class="btn btn-sm btn-warning" title="Edit">
+                           <i class="bi bi-pencil-square"></i> Edit
+                        </a>
+                        <a href="{{ url_for('hapus_pengukuran', id=p.id) }}" 
+                           class="btn btn-sm btn-danger" title="Hapus"
+                           onclick="return confirm('Yakin ingin menghapus data ini?')">
+                           <i class="bi bi-trash"></i> Hapus
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!-- Pagination -->
+    <nav>
+        <ul class="pagination">
+            {% if page > 1 %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('data_pengukuran', page=page-1) }}">Previous</a>
+            </li>
+            {% endif %}
+            <li class="page-item">
+                <span class="page-link">{{ page }}</span>
+            </li>
+            {% if has_next %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('data_pengukuran', page=page+1) }}">Next</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endblock %}

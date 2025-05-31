@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Unggah Dataset Training (.csv)</h2>
+  <form method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label>Pilih file CSV:</label>
+      <input type="file" name="file" accept=".xlsx" class="form-control" required>
+      <small class="form-text text-muted">
+        Format kolom: berat_badan, tinggi_badan, lila, status_gizi (tanpa header)
+      </small>
+    </div>
+    <button type="submit" class="btn btn-primary">Unggah</button>
+    <a href="{{ url_for('kelola_dataset_training') }}" class="btn btn-secondary">Kembali</a>
+  </form>
+</div>
+{% endblock %}

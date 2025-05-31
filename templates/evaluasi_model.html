@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Evaluasi Model Klasifikasi KNN-LVQ</h2>
+    
+    <!-- Panel Informasi Status -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">Informasi Dataset</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <tr>
+                                <th>Total Data Training</th>
+                                <td>{{ lvq_stats.total_training if lvq_stats else 'Belum tersedia' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Total Prototype LVQ</th>
+                                <td>{{ lvq_stats.total_prototypes if lvq_stats else 'Belum tersedia' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Rasio Reduksi Data</th>
+                                <td>{{ "%.2f"|format(lvq_stats.reduction_ratio) if lvq_stats else '0.00' }}%</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">Parameter Model KNN</h5>
+                </div>
+                <div class="card-body">
+                    {% if params %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <tr>
+                                <th>Nilai K</th>
+                                <td>{{ params.nilai_k }}</td>
+                            </tr>
+                            <tr>
+                                <th>Bobot Berat Badan</th>
+                                <td>{{ "%.3f"|format(params.bobot_berat) }}</td>
+                            </tr>
+                            <tr>
+                                <th>Bobot Tinggi Badan</th>
+                                <td>{{ "%.3f"|format(params.bobot_tinggi) }}</td>
+                            </tr>
+                            <tr>
+                                <th>Bobot LILA</th>
+                                <td>{{ "%.3f"|format(params.bobot_lila) }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-warning">
+                        Parameter KNN belum diatur
+                        <a href="{{ url_for('parameter') }}" class="btn btn-primary btn-sm mt-2">Atur Parameter</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if model_evaluation %}
+    <!-- Metrik Performa -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">Performa Model</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="metric-box text-center p-3 border rounded mb-3">
+                                <h6>Akurasi Model</h6>
+                                <h3 class="accuracy-value">{{ "%.2f"|format(model_evaluation.accuracy) }}%</h3>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="metric-box text-center p-3 border rounded mb-3">
+                                <h6>Cross-Validation Score</h6>
+                                <h3 class="cv-mean-value">{{ "%.2f"|format(model_evaluation.cv_mean) }}%</h3>
+                                <small class="cv-std-value">± {{ "%.2f"|format(model_evaluation.cv_std) }}%</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="metric-box text-center p-3 border rounded mb-3">
+                                <h6>Rata-rata Sensitivitas</h6>
+                                <h3>{{ "%.2f"|format(model_evaluation.mean_sensitivitas * 100) }}%</h3>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="metric-box text-center p-3 border rounded mb-3">
+                                <h6>Rata-rata Spesifisitas</h6>
+                                <h3>{{ "%.2f"|format(model_evaluation.mean_spesifisitas * 100) }}%</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Bagian Metrik Per Kelas -->
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Status Gizi</th>
+                <th>Sensitivitas</th>
+                <th>Spesifisitas</th>
+                <th>Presisi</th>
+                <th>F1-Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for class_name in model_evaluation.class_names %}
+            <tr>
+                <td><strong>{{ class_name|title }}</strong></td>
+                <td id="sensitivity-{{ class_name }}">
+                    {{ "%.2f"|format(model_evaluation.sensitivitas_per_kelas[loop.index0] * 100) }}%
+                </td>
+                <td id="specificity-{{ class_name }}">
+                    {{ "%.2f"|format(model_evaluation.spesifisitas_per_kelas[loop.index0] * 100) }}%
+                </td>
+                <td id="precision-{{ class_name }}">
+                    {{ "%.2f"|format(model_evaluation.presisi_per_kelas[loop.index0] * 100) }}%
+                </td>
+                <td id="f1-{{ class_name }}">
+                    {{ "%.2f"|format(model_evaluation.f1_per_kelas[loop.index0] * 100) }}%
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Confusion Matrix -->
+<div class="card mb-4">
+    <div class="card-header bg-warning">
+        <h5 class="card-title mb-0">Confusion Matrix</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered confusion-matrix">
+                <thead>
+                    <tr>
+                        <th colspan="2" rowspan="2"></th>
+                        <th colspan="{{ model_evaluation.class_names|length }}" class="text-center">Nilai Aktual</th>
+                    </tr>
+                    <tr>
+                        {% for class_name in model_evaluation.class_names %}
+                        <th>{{ class_name|title }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in range(model_evaluation.class_names|length) %}
+                    <tr>
+                        {% if loop.first %}
+                        <th rowspan="{{ model_evaluation.class_names|length }}" class="vertical-text">Nilai Prediksi</th>
+                        {% endif %}
+                        <th>{{ model_evaluation.class_names[i]|title }}</th>
+                        {% for j in range(model_evaluation.class_names|length) %}
+                        <td class="{{ 'table-success' if i == j else 'table-danger' }}">
+                            {{ model_evaluation.confusion_matrix[i][j] }}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+    <div class="text-muted text-end mb-4">
+        <small class="last-updated">Terakhir diperbarui: {{ last_updated }}</small>
+    </div>
+
+    {% else %}
+    <div class="alert alert-warning">
+        <h4 class="alert-heading">Evaluasi Model Belum Tersedia</h4>
+        <p>Untuk melihat evaluasi model, pastikan:</p>
+        <ul>
+            <li>Parameter KNN telah diatur</li>
+            <li>Dataset training telah diunggah</li>
+            <li>Proses sampling LVQ telah dilakukan</li>
+        </ul>
+        <hr>
+        <div class="mt-3">
+            <a href="{{ url_for('parameter') }}" class="btn btn-primary me-2">Atur Parameter KNN</a>
+            <a href="{{ url_for('lvq_prototype') }}" class="btn btn-info">Kelola Dataset LVQ</a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.metric-box {
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+}
+.metric-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.vertical-text {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    white-space: nowrap;
+}
+.confusion-matrix th, 
+.confusion-matrix td {
+    text-align: center;
+    vertical-align: middle;
+}
+.table-success {
+    background-color: rgba(40, 167, 69, 0.2) !important;
+}
+.table-danger {
+    background-color: rgba(220, 53, 69, 0.1) !important;
+}
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+}
+</style>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/evaluasi-model.js') }}"></script>
+{% endblock %}

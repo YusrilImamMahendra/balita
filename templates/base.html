@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Pendeteksi Gizi</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.png') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background: #f8f9fa;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background: #fff;
+            border-right: 1px solid #dee2e6;
+            z-index: 1000;
+            transition: width 0.3s;
+            width: 250px;
+            overflow-y: auto;
+        }
+        
+        .sidebar.collapsed {
+            width: 70px;
+        }
+        
+        .sidebar .sidebar-toggler {
+            background: none;
+            border: none;
+            color: #333;
+            width: 100%;
+            text-align: right;
+            padding: 0.5rem 1rem;
+            font-size: 1.25rem;
+        }
+        
+        .sidebar .nav-link {
+            color: #333;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        
+        .sidebar .nav-link i {
+            margin-right: 10px;
+            font-size: 1.25rem;
+            min-width: 25px;
+        }
+        
+        .sidebar .nav-link.active {
+            background: #e9ecef;
+            color: #0d6efd;
+            font-weight: bold;
+        }
+        
+        .sidebar .nav-link:hover {
+            background: #f8f9fa;
+            color: #0d6efd;
+        }
+        
+        /* Main Content Styles */
+        main {
+            margin-left: 250px;
+            padding: 2rem;
+            transition: margin-left 0.3s;
+        }
+        
+        .sidebar.collapsed + main {
+            margin-left: 70px;
+        }
+        
+        /* Page Title Styles */
+        .page-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #1a202c;
+            position: relative;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 4px;
+            background: #2563eb;
+            border-radius: 2px;
+        }
+        
+        /* Profile Menu Styles */
+        .profile-icon {
+            cursor: pointer;
+            position: relative;
+        }
+        
+        #user-photo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            display: none;
+            min-width: 200px;
+            z-index: 1000;
+        }
+        
+        .dropdown-menu.show {
+            display: block;
+        }
+        
+        .user-name {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .dropdown-item {
+            padding: 0.75rem 1rem;
+            color: #4a5568;
+            transition: all 0.2s;
+        }
+        
+        .dropdown-item:hover {
+            background: #f7fafc;
+            color: #2b6cb0;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            main {
+                margin-left: 0 !important;
+                padding: 1rem;
+            }
+            
+            .page-title {
+                font-size: 28px;
+            }
+            :root {
+                --zoom-scale: 1;
+            }
+
+            body {
+                overflow-x: hidden;
+            }
+
+            .main-content {
+                width: 100%;
+                min-height: 100vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% if session.get('user_id') %}
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="d-flex align-items-center justify-content-between p-3 border-bottom">
+            <span class="fw-bold fs-5">Pendeteksi Gizi</span>
+            <button class="sidebar-toggler" id="sidebarToggler">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+        </div>
+        <ul class="nav flex-column mt-3">
+            <li class="nav-item">
+                <a class="nav-link {% if request.endpoint=='dashboard' %}active{% endif %}" 
+                   href="{{ url_for('dashboard') }}">
+                    <i class="bi bi-house-fill"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            {% if session['role'] == 'admin' %}
+            <li class="nav-item">
+                <a class="nav-link {% if request.endpoint=='kelola_user' %}active{% endif %}" 
+                   href="{{ url_for('kelola_user') }}">
+                    <i class="bi bi-people-fill"></i>
+                    <span>Kelola User</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.endpoint=='parameter' %}active{% endif %}" 
+                   href="{{ url_for('parameter') }}">
+                    <i class="bi bi-building-add"></i>
+                    <span>Parameter KNN</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.endpoint=='lvq_prototype' %}active{% endif %}" 
+                   href="{{ url_for('lvq_prototype') }}">
+                    <i class="bi bi-clipboard2-pulse-fill"></i>
+                    <span>LVQ</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.endpoint=='kelola_dataset_training' %}active{% endif %}" 
+                   href="{{ url_for('kelola_dataset_training') }}">
+                    <i class="bi bi-clipboard-data"></i>
+                    <span>Dataset Training</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.endpoint=='evaluasi_model' %}active{% endif %}" 
+                   href="{{ url_for('evaluasi_model') }}">
+                    <i class="bi bi-clipboard-data"></i>
+                    <span>Evaluasi Model</span>
+                </a>
+            </li>
+            {% endif %}
+            <li class="nav-item">
+                <a class="nav-link {% if request.endpoint=='data_balita' %}active{% endif %}" 
+                   href="{{ url_for('data_balita') }}">
+                    <i class="bi bi-journal"></i>
+                    <span>Data Balita</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.endpoint=='data_pengukuran' %}active{% endif %}" 
+                   href="{{ url_for('data_pengukuran') }}">
+                    <i class="bi bi-calculator"></i>
+                    <span>Pengukuran</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.endpoint=='upload_balita_pengukuran' %}active{% endif %}" 
+                   href="{{ url_for('upload_balita_pengukuran') }}">
+                    <i class="bi bi-cloud-upload"></i>
+                    <span>Upload Data</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.endpoint=='laporan' %}active{% endif %}" 
+                   href="{{ url_for('laporan') }}">
+                    <i class="bi bi-file-earmark-text-fill"></i>
+                    <span>Laporan</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('logout') }}" onclick="return confirmLogout();">
+                    <i class="bi bi-power"></i>
+                    <span>Keluar</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main>
+        <!-- Top Bar -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="page-title">{% block page_title %}{% endblock %}</h1>
+            <div class="profile-icon">
+                <img src="{{ url_for('static', filename='img/' + (session.get('photo') or 'default-profile.png')) }}" 
+                     alt="Profile" 
+                     id="user-photo">
+                <div class="dropdown-menu" id="profileMenu">
+                    <div class="user-name">{{ session.get('name', 'Pengguna') }}</div>
+                    <a href="{{ url_for('profile') }}" class="dropdown-item">
+                        <i class="bi bi-person me-2"></i>Profil
+                    </a>
+                    <a href="{{ url_for('logout') }}" class="dropdown-item" onclick="return confirmLogout();">
+                        <i class="bi bi-box-arrow-right me-2"></i>Keluar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Page Content -->
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Sidebar Toggle
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggler = document.getElementById('sidebarToggler');
+        const profileIcon = document.getElementById('user-photo');
+        const profileMenu = document.getElementById('profileMenu');
+
+        if (sidebarToggler) {
+            sidebarToggler.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+                const icon = sidebarToggler.querySelector('i');
+                icon.classList.toggle('bi-chevron-left');
+                icon.classList.toggle('bi-chevron-right');
+            });
+        }
+
+        // Profile Menu Toggle
+        if (profileIcon && profileMenu) {
+            profileIcon.addEventListener('click', (e) => {
+                e.stopPropagation();
+                profileMenu.classList.toggle('show');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!profileMenu.contains(e.target)) {
+                    profileMenu.classList.remove('show');
+                }
+            });
+        }
+
+        // Logout Confirmation
+        function confirmLogout() {
+            return confirm("Apakah Anda yakin ingin logout?");
+        }
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Tambah Data Balita</h2>
+    <form method="POST">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Data Pribadi</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="nik" class="form-label">NIK</label>
+                    <input type="text" class="form-control" id="nik" name="nik" required>
+                </div>
+                <div class="mb-3">
+                    <label for="nama" class="form-label">Nama Balita</label>
+                    <input type="text" class="form-control" id="nama" name="nama" required>
+                </div>
+                <div class="mb-3">
+                    <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
+                    <input type="date" class="form-control" id="tanggal_lahir" name="tanggal_lahir" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Usia</label>
+                    <div id="usia" class="form-control">0 tahun 0 bulan</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Jenis Kelamin</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="jenis_kelamin" id="laki" value="L" checked>
+                            <label class="form-check-label" for="laki">Laki-laki</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="jenis_kelamin" id="perempuan" value="P">
+                            <label class="form-check-label" for="perempuan">Perempuan</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="nama_ortu" class="form-label">Nama Orang Tua</label>
+                    <input type="text" class="form-control" id="nama_ortu" name="nama_ortu" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Data Alamat</h5>
+            </div>
+            <div class="card-body">
+                <!-- Field statis -->
+                <input type="hidden" name="provinsi" value="Banten">
+                <input type="hidden" name="kabupaten" value="Lebak">
+                <input type="hidden" name="kecamatan" value="Cimarga">
+                <input type="hidden" name="puskesmas" value="Puskesmas Cimarga">
+                
+                <div class="mb-3">
+                    <label for="desa" class="form-label">Desa</label>
+                    <select class="form-select" id="desa" name="desa" required>
+                        <option value="">Pilih Desa</option>
+                        {% for d in desa %}
+                        <option value="{{ d.nama }}">{{ d.nama }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="rt" class="form-label">RT</label>
+                            <input type="text" class="form-control" id="rt" name="rt" required 
+                                   pattern="[0-9]{1,3}" title="Masukkan nomor RT (1-999)">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="rw" class="form-label">RW</label>
+                            <input type="text" class="form-control" id="rw" name="rw" required
+                                   pattern="[0-9]{1,3}" title="Masukkan nomor RW (1-999)">
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="alamat_detail" class="form-label">Detail Alamat</label>
+                    <textarea class="form-control" id="alamat_detail" name="alamat_detail" rows="2" required></textarea>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Simpan</button>
+        <a href="{{ url_for('data_balita') }}" class="btn btn-secondary">Batal</a>
+    </form>
+</div>
+
+<script>
+    document.getElementById('tanggal_lahir').addEventListener('change', function() {
+        const tanggalLahir = new Date(this.value);
+        const sekarang = new Date();
+
+        let tahun = sekarang.getFullYear() - tanggalLahir.getFullYear();
+        let bulan = sekarang.getMonth() - tanggalLahir.getMonth();
+
+        if (bulan < 0) {
+            tahun--;
+            bulan += 12;
+        }
+
+        document.getElementById('usia').innerText = `${tahun} tahun ${bulan} bulan`;
+    });
+</script>
+{% endblock %}

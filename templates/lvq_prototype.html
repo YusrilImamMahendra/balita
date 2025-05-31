@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Data Prototipe LVQ</h2>
+  
+  <!-- <form action="{{ url_for('lvq_sampling') }}" method="post">
+      <button type="submit" class="btn btn-primary mb-3">Generate Prototipe LVQ</button>
+  </form> -->
+  <form action="{{ url_for('delete_all_lvq_prototype') }}" method="post" style="display:inline;" onsubmit="return confirm('Yakin ingin hapus SEMUA prototipe LVQ?');">
+    <button type="submit" class="btn btn-danger mb-3">Hapus Semua Prototipe LVQ</button>
+</form>
+  <table class="table table-bordered mt-3">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>Berat Badan (kg)</th>
+        <th>Tinggi Badan (cm)</th>
+        <th>LILA (cm)</th>
+        <th>Status Gizi</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in data_lvq %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ row['feature1']|round(2) }}</td>
+        <td>{{ row['feature2']|round(2) }}</td>
+        <td>{{ row['feature3']|round(2) }}</td>
+        <td>{{ row['target'] }}</td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="6" class="text-center">Belum ada prototipe LVQ</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+

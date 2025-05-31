@@ -1,0 +1,531 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Pendeteksi Gizi</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.png') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tailwind.out.css') }}">
+    <style>
+    @font-face {
+        font-family: 'Poppins';
+        src: url('{{ url_for('static', filename='fonts/Poppins-Regular.ttf') }}') format('truetype');
+        font-weight: 400;
+        font-style: normal;
+    }
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
+    </style>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8fafc;
+        }
+        .hero-pattern {
+            background-color: #0ea5e9;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="bg-white shadow-md fixed w-full z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <svg class="h-8 w-8 text-sky-500" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h2v2H6v-2zm0 4h8v2H6v-2zm10 0h2v2h-2v-2zm-6-4h8v2h-8v-2z"/>
+                        </svg>
+                        <span class="ml-2 text-xl font-bold text-gray-800">SiGizi Cimarga</span>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="#beranda" class="px-3 py-2 text-sky-600 font-medium hover:text-sky-800">Beranda</a>
+                    <a href="#statistik" class="px-3 py-2 text-gray-600 font-medium hover:text-sky-600">Statistik</a>
+                    <a href="#informasi" class="px-3 py-2 text-gray-600 font-medium hover:text-sky-600">Informasi Gizi</a>
+                    <a href="#puskesmas" class="px-3 py-2 text-gray-600 font-medium hover:text-sky-600">Tentang Puskesmas</a>
+                    <a href="login" class="ml-4 px-4 py-2 bg-sky-500 text-white rounded-md font-medium hover:bg-sky-600 transition duration-300">login</a>
+                </div>
+                <div class="flex md:hidden items-center">
+                    <button id="mobile-menu-button" class="text-gray-600 hover:text-sky-600 focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-md">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="#beranda" class="block px-3 py-2 text-sky-600 font-medium hover:bg-sky-50 rounded-md">Beranda</a>
+                <a href="#statistik" class="block px-3 py-2 text-gray-600 font-medium hover:bg-sky-50 hover:text-sky-600 rounded-md">Statistik</a>
+                <a href="#informasi" class="block px-3 py-2 text-gray-600 font-medium hover:bg-sky-50 hover:text-sky-600 rounded-md">Informasi Gizi</a>
+                <a href="#puskesmas" class="block px-3 py-2 text-gray-600 font-medium hover:bg-sky-50 hover:text-sky-600 rounded-md">Tentang Puskesmas</a>
+                <a href="login" class="block px-3 py-2 text-center bg-sky-500 text-white rounded-md font-medium hover:bg-sky-600 transition duration-300 mt-4">Masuk</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="beranda" class="hero-pattern pt-28 pb-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0">
+                    <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">
+                        Sistem Pendeteksi Kekurangan Gizi Puskesmas Cimarga
+                    </h1>
+                    <p class="mt-4 text-lg text-white opacity-90">
+                        Memantau dan menangani kasus kekurangan gizi di Kecamatan Cimarga untuk meningkatkan kesehatan masyarakat.
+                    </p>
+                    <div class="mt-8 flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
+                        <a href="#informasi" class="px-6 py-3 bg-white text-sky-600 font-medium rounded-md hover:bg-gray-100 transition duration-300 text-center">
+                            Pelajari Lebih Lanjut
+                        </a>
+                        <a href="login" class="px-6 py-3 border border-white text-white font-medium rounded-md hover:bg-white hover:bg-opacity-10 transition duration-300 text-center">
+                            Masuk ke Sistem
+                        </a>
+                    </div>
+                </div>
+                <div class="md:w-1/2 flex justify-center">
+                    <svg class="w-full max-w-md" viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="100" y="50" width="300" height="200" rx="10" fill="#ffffff" />
+                        <rect x="120" y="80" width="260" height="140" rx="5" fill="#f0f9ff" />
+                        
+                        <!-- Chart elements -->
+                        <rect x="140" y="180" width="30" height="20" fill="#0ea5e9" />
+                        <rect x="180" y="160" width="30" height="40" fill="#0ea5e9" />
+                        <rect x="220" y="140" width="30" height="60" fill="#0ea5e9" />
+                        <rect x="260" y="170" width="30" height="30" fill="#0ea5e9" />
+                        <rect x="300" y="130" width="30" height="70" fill="#0ea5e9" />
+                        
+                        <!-- Line across chart -->
+                        <path d="M140 130 L330 130" stroke="#ef4444" stroke-width="2" stroke-dasharray="5,5" />
+                        
+                        <!-- Doctor with clipboard -->
+                        <circle cx="180" cy="300" r="40" fill="#0ea5e9" />
+                        <rect x="160" y="270" width="40" height="60" rx="5" fill="#ffffff" />
+                        <circle cx="180" cy="270" r="15" fill="#ffffff" />
+                        
+                        <!-- Child figure -->
+                        <circle cx="320" cy="300" r="30" fill="#0ea5e9" opacity="0.7" />
+                        <circle cx="320" cy="260" r="20" fill="#0ea5e9" opacity="0.7" />
+                        
+                        <!-- Connection between figures -->
+                        <path d="M220 300 C250 270, 270 270, 290 300" stroke="#0ea5e9" stroke-width="3" fill="none" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistik Section -->
+<!-- Statistik Section -->
+<section id="statistik" class="py-12 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-gray-800">Statistik Gizi di Kecamatan Cimarga</h2>
+            <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+                Data terkini mengenai status gizi masyarakat di wilayah Kecamatan Cimarga
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            <div class="p-6 bg-sky-50 rounded-lg">
+                <p class="text-3xl font-bold text-sky-600">12.8%</p>
+                <p class="text-gray-600 mt-2">Balita Kekurangan Gizi</p>
+            </div>
+            <div class="p-6 bg-sky-50 rounded-lg">
+                <p class="text-3xl font-bold text-sky-600">22.5%</p>
+                <p class="text-gray-600 mt-2">Balita Stunting</p>
+            </div>
+            <div class="p-6 bg-sky-50 rounded-lg">
+                <p class="text-3xl font-bold text-sky-600">9.7%</p>
+                <p class="text-gray-600 mt-2">Balita Kurus</p>
+            </div>
+            <div class="p-6 bg-sky-50 rounded-lg">
+                <p class="text-3xl font-bold text-sky-600">1,250+</p>
+                <p class="text-gray-600 mt-2">Balita Terpantau</p>
+            </div>
+        </div>
+        
+<div class="mt-12">
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Distribusi Status Gizi Balita per bulan</h3>
+        <canvas id="statusGiziChart" height="100"></canvas>
+    </div>
+</div>
+
+</section>
+
+    <!-- Informasi Gizi Section -->
+    <section id="informasi" class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800">Informasi Kekurangan Gizi</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+                    Kenali tanda-tanda dan dampak kekurangan gizi pada anak
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="bg-sky-100 rounded-full w-14 h-14 flex items-center justify-center mb-4">
+                        <svg class="h-8 w-8 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Apa itu Kekurangan Gizi?</h3>
+                    <p class="text-gray-600">
+                        Kekurangan gizi adalah kondisi ketika tubuh tidak mendapatkan cukup nutrisi yang dibutuhkan untuk fungsi normal. Pada anak-anak, hal ini dapat menghambat pertumbuhan dan perkembangan.
+                    </p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="bg-sky-100 rounded-full w-14 h-14 flex items-center justify-center mb-4">
+                        <svg class="h-8 w-8 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Tanda-tanda Kekurangan Gizi</h3>
+                    <ul class="text-gray-600 list-disc pl-5 space-y-1">
+                        <li>Berat badan di bawah standar</li>
+                        <li>Pertumbuhan terhambat (stunting)</li>
+                        <li>Kelelahan dan kelemahan</li>
+                        <li>Sistem kekebalan tubuh lemah</li>
+                        <li>Perubahan pada kulit, rambut, atau kuku</li>
+                        <li>Gangguan konsentrasi</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="bg-sky-100 rounded-full w-14 h-14 flex items-center justify-center mb-4">
+                        <svg class="h-8 w-8 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Dampak Jangka Panjang</h3>
+                    <p class="text-gray-600">
+                        Kekurangan gizi pada masa anak-anak dapat menyebabkan dampak jangka panjang seperti:
+                    </p>
+                    <ul class="text-gray-600 list-disc pl-5 space-y-1 mt-2">
+                        <li>Gangguan perkembangan kognitif</li>
+                        <li>Penurunan kemampuan belajar</li>
+                        <li>Risiko penyakit kronis lebih tinggi</li>
+                        <li>Produktivitas kerja rendah di masa dewasa</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="bg-sky-100 rounded-full w-14 h-14 flex items-center justify-center mb-4">
+                        <svg class="h-8 w-8 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Jenis Kekurangan Gizi</h3>
+                    <ul class="text-gray-600 list-disc pl-5 space-y-1">
+                        <li><span class="font-medium">Stunting:</span> Tinggi badan rendah untuk usia</li>
+                        <li><span class="font-medium">Wasting:</span> Berat badan rendah untuk tinggi badan</li>
+                        <li><span class="font-medium">Underweight:</span> Berat badan rendah untuk usia</li>
+                        <li><span class="font-medium">Defisiensi mikronutrien:</span> Kekurangan vitamin dan mineral penting</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="bg-sky-100 rounded-full w-14 h-14 flex items-center justify-center mb-4">
+                        <svg class="h-8 w-8 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Pencegahan Kekurangan Gizi</h3>
+                    <ul class="text-gray-600 list-disc pl-5 space-y-1">
+                        <li>Pemberian ASI eksklusif selama 6 bulan pertama</li>
+                        <li>Makanan pendamping ASI yang bergizi seimbang</li>
+                        <li>Pemantauan pertumbuhan rutin</li>
+                        <li>Imunisasi lengkap</li>
+                        <li>Sanitasi dan kebersihan yang baik</li>
+                        <li>Edukasi gizi untuk keluarga</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="bg-sky-100 rounded-full w-14 h-14 flex items-center justify-center mb-4">
+                        <svg class="h-8 w-8 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Program Puskesmas Cimarga</h3>
+                    <p class="text-gray-600">
+                        Puskesmas Cimarga memiliki beberapa program untuk mengatasi kekurangan gizi:
+                    </p>
+                    <ul class="text-gray-600 list-disc pl-5 space-y-1 mt-2">
+                        <li>Pemantauan pertumbuhan balita bulanan</li>
+                        <li>Pemberian makanan tambahan untuk balita kurang gizi</li>
+                        <li>Konseling gizi untuk ibu hamil dan menyusui</li>
+                        <li>Kunjungan rumah untuk kasus berisiko tinggi</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tentang Puskesmas Section -->
+    <section id="puskesmas" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800">Tentang Puskesmas Cimarga</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+                    Melayani masyarakat Kecamatan Cimarga dengan layanan kesehatan berkualitas
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <div class="bg-gray-100 rounded-lg overflow-hidden h-64 md:h-80">
+                        <!-- SVG illustration of a health center building -->
+                        <svg class="w-full h-full" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Sky background -->
+                            <rect width="800" height="600" fill="#f0f9ff" />
+                            
+                            <!-- Ground -->
+                            <rect width="800" height="150" y="450" fill="#d1fae5" />
+                            
+                            <!-- Main building -->
+                            <rect width="400" height="250" x="200" y="250" fill="#ffffff" stroke="#0ea5e9" stroke-width="3" />
+                            
+                            <!-- Roof -->
+                            <polygon points="180,250 400,150 620,250" fill="#0ea5e9" />
+                            
+                            <!-- Door -->
+                            <rect width="80" height="120" x="360" y="380" fill="#0ea5e9" />
+                            <rect width="60" height="100" x="370" y="390" fill="#ffffff" />
+                            
+                            <!-- Windows -->
+                            <rect width="60" height="80" x="250" y="300" fill="#f0f9ff" stroke="#0ea5e9" stroke-width="3" />
+                            <rect width="60" height="80" x="490" y="300" fill="#f0f9ff" stroke="#0ea5e9" stroke-width="3" />
+                            <line x1="250" y1="340" x2="310" y2="340" stroke="#0ea5e9" stroke-width="3" />
+                            <line x1="490" y1="340" x2="550" y2="340" stroke="#0ea5e9" stroke-width="3" />
+                            <line x1="280" y1="300" x2="280" y2="380" stroke="#0ea5e9" stroke-width="3" />
+                            <line x1="520" y1="300" x2="520" y2="380" stroke="#0ea5e9" stroke-width="3" />
+                            
+                            <!-- Health symbol -->
+                            <circle cx="400" cy="220" r="30" fill="#ffffff" stroke="#0ea5e9" stroke-width="3" />
+                            <rect width="40" height="10" x="380" y="215" fill="#0ea5e9" />
+                            <rect width="10" height="40" x="395" y="200" fill="#0ea5e9" />
+                            
+                            <!-- Trees -->
+                            <circle cx="150" cy="350" r="40" fill="#34d399" />
+                            <rect width="15" height="100" x="142.5" y="350" fill="#8b5cf6" />
+                            <circle cx="650" cy="350" r="40" fill="#34d399" />
+                            <rect width="15" height="100" x="642.5" y="350" fill="#8b5cf6" />
+                        </svg>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-4">Profil Puskesmas</h3>
+                    <p class="text-gray-600 mb-4">
+                        Puskesmas Cimarga adalah fasilitas kesehatan tingkat pertama yang melayani masyarakat di Kecamatan Cimarga, Kabupaten Lebak, Provinsi Banten. Dengan visi "Mewujudkan Masyarakat Cimarga yang Sehat dan Mandiri", Puskesmas Cimarga berkomitmen memberikan pelayanan kesehatan yang berkualitas dan terjangkau.
+                    </p>
+                    
+                    <div class="grid grid-cols-2 gap-4 mt-6">
+                        <div class="bg-sky-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-gray-800 mb-2">Jam Pelayanan</h4>
+                            <p class="text-gray-600">
+                                Senin - Kamis: 08.00 - 14.00<br>
+                                Jumat: 08.00 - 11.00<br>
+                                Sabtu: 08.00 - 12.00
+                            </p>
+                        </div>
+                        <div class="bg-sky-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-gray-800 mb-2">Kontak</h4>
+                            <p class="text-gray-600">
+                                Telp: (0252) 123456<br>
+                                Email: puskesmas.cimarga@gmail.com<br>
+                                WhatsApp: 0812-3456-7890
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <h4 class="font-semibold text-gray-800 mb-2">Layanan Unggulan</h4>
+                        <ul class="text-gray-600 list-disc pl-5 space-y-1">
+                            <li>Pemeriksaan kesehatan umum</li>
+                            <li>Kesehatan ibu dan anak</li>
+                            <li>Imunisasi</li>
+                            <li>Pemantauan status gizi</li>
+                            <li>Kesehatan gigi dan mulut</li>
+                            <li>Laboratorium sederhana</li>
+                            <li>Farmasi</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 bg-sky-50 p-6 rounded-lg">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4 text-center">Lokasi Puskesmas Cimarga</h3>
+                <div class="aspect-w-16 aspect-h-9 bg-gray-200 rounded-lg overflow-hidden h-64">
+                    <!-- Simple map placeholder -->
+                    <div class="h-full w-full bg-sky-100 flex items-center justify-center">
+                        <div class="text-center">
+                            <svg class="h-12 w-12 text-sky-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <p class="mt-2 text-gray-600">Jl. Raya Leuwidamar KM 09 Kp. Cilaki Desa Margajaya Kecamatan Cimarga, Kabupaten Lebak, Banten 42361</p>
+                            <a href="https://maps.app.goo.gl/Xc45MTGR8YMKtmgG9" target="_blank" class="mt-4 inline-block px-4 py-2 bg-sky-500 text-white rounded-md hover:bg-sky-600 transition duration-300">Buka di Google Maps</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section id="login" class="py-16 bg-sky-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h2 class="text-3xl font-bold text-white">Akses Sistem Pendeteksi Kekurangan Gizi</h2>
+                <p class="mt-4 text-lg text-white opacity-90 max-w-2xl mx-auto">
+                    Untuk petugas kesehatan Puskesmas Cimarga, silakan masuk ke sistem untuk mengakses data dan fitur lengkap
+                </p>
+                <div class="mt-8">
+                    <a href="/login" class="px-8 py-3 bg-white text-sky-600 font-medium rounded-md hover:bg-gray-100 transition duration-300 inline-block">
+                        Masuk ke Sistem
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <svg class="h-8 w-8 text-sky-400" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h2v2H6v-2zm0 4h8v2H6v-2zm10 0h2v2h-2v-2zm-6-4h8v2h-8v-2z"/>
+                        </svg>
+                        <span class="ml-2 text-xl font-bold">SiGizi Cimarga</span>
+                    </div>
+                    <p class="text-gray-400">
+                        Sistem Pendeteksi Kekurangan Gizi Puskesmas Cimarga, membantu memantau dan meningkatkan status gizi masyarakat di Kecamatan Cimarga.
+                    </p>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Tautan Cepat</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#beranda" class="text-gray-400 hover:text-white">Beranda</a></li>
+                        <li><a href="#statistik" class="text-gray-400 hover:text-white">Statistik</a></li>
+                        <li><a href="#informasi" class="text-gray-400 hover:text-white">Informasi Gizi</a></li>
+                        <li><a href="#puskesmas" class="text-gray-400 hover:text-white">Tentang Puskesmas</a></li>
+                        <li><a href="#login" class="text-gray-400 hover:text-white">Masuk</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Kontak</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <svg class="h-6 w-6 text-sky-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <span> Jl. Raya Leuwidamar KM 09 Kp. Cilaki Desa Margajaya Kecamatan Cimarga</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="h-6 w-6 text-sky-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                            </svg>
+                            <span>081932408475</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="h-6 w-6 text-sky-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            <span>puskesmas.cimarga@gmail.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="mt-8 pt-8 border-t border-gray-700 text-center text-gray-400">
+                <p>&copy; 2024 Puskesmas Cimarga. Hak Cipta Dilindungi.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === 'login') {
+                    // For login, we would typically redirect to a login page
+                    // For this demo, we'll just scroll to the section
+                    document.querySelector(targetId).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                } else {
+                    document.querySelector(targetId).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+                
+                // Close mobile menu if open
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const chartData = {{ chart_data|tojson }};
+    const ctx = document.getElementById('statusGiziChart').getContext('2d');
+    const statusGiziChart = new Chart(ctx, {
+        type: 'bar',
+        data: chartData,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Tahun'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Jumlah Balita'
+                    },
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93eb89d3777cf8ff',t:'MTc0NzA2OTkyMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

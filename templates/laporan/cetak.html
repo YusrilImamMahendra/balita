@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Laporan Data Pengukuran Balita</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 5px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .periode {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .alamat {
+            font-size: 11px;
+        }
+        @media print {
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button onclick="window.print()" class="no-print">Cetak</button>
+    <a href="{{ url_for('laporan') }}" class="no-print">Kembali</a>
+
+    <div class="header">
+        <h2>Laporan Data Pengukuran Balita</h2>
+    </div>
+
+    <div class="periode">
+        Periode: {{ start_date }} sampai {{ end_date }}
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th rowspan="2">No</th>
+                <th rowspan="2">NIK Balita</th>
+                <th rowspan="2">Nama Balita</th>
+                <th colspan="4">Wilayah</th>
+                <th rowspan="2">Alamat Lengkap</th>
+                <th rowspan="2">Tanggal Ukur</th>
+                <th rowspan="2">Berat Badan (kg)</th>
+                <th rowspan="2">Tinggi Badan (cm)</th>
+                <th rowspan="2">Lingkar Lengan (cm)</th>
+                <th rowspan="2">Status Gizi</th>
+            </tr>
+            <tr>
+                <th>Provinsi</th>
+                <th>Kabupaten</th>
+                <th>Kecamatan</th>
+                <th>Puskesmas</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ row.nik }}</td>
+                <td>{{ row.nama }}</td>
+                <td>{{ row.provinsi }}</td>
+                <td>{{ row.kabupaten }}</td>
+                <td>{{ row.kecamatan }}</td>
+                <td>{{ row.puskesmas }}</td>
+                <td class="alamat">
+                    Desa {{ row.desa }}, 
+                    RT {{ row.rt }}/RW {{ row.rw }}, 
+                    {{ row.alamat_detail }}
+                </td>
+                <td>{{ row.tanggal_ukur }}</td>
+                <td>{{ row.berat_badan }}</td>
+                <td>{{ row.tinggi_badan }}</td>
+                <td>{{ row.lingkar_lengan }}</td>
+                <td>{{ row.status_gizi }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

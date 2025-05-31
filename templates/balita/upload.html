@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Unggah Data Balita & Pengukuran</h2>
+    <form action="{{ url_for('upload_balita_pengukuran') }}" method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="file" class="form-label">Pilih File Excel</label>
+            <input type="file" class="form-control" id="file" name="file" accept=".xlsx" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Unggah</button>
+    </form>
+    <hr>
+    <h5>Format file Excel:</h5>
+    <table class="table table-bordered w-auto">
+        <tr>
+            <th>nik</th>
+            <th>nama</th>
+            <th>nama orangtua</th>
+            <th>jenis kelamin</th>
+            <th>usia_tahun</th>
+            <th>usia_bulan</th>
+            <th>desa</th>
+            <th>rt</th>
+            <th>rw</th>
+            <th>alamat</th>
+            <th>tgl pengukuran</th>
+            <th>berat badan (KG)</th>
+            <th>Tinggi badan (CM)</th>
+            <th>LILA (CM)</th>
+        </tr>
+    </table>
+</div>
+{% endblock %}

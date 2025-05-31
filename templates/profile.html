@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Profil{% endblock %}
+
+{% block content %}
+<div class="container mt-4" style="max-width: 800px;">
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <img src="{{ url_for('static', filename='img/' + (user['photo'] or 'default-profile.png')) }}"
+                 alt="Foto Profil"
+                 class="profile-photo-preview mb-3"
+                 style="width:140px;height:140px;object-fit:cover;border-radius:50%;border:2px solid #ddd;">
+            <h4 class="mt-2">{{ user['nama_lengkap'] }}</h4>
+            <div class="text-muted">{{ user['email'] }}</div>
+            <div class="text-muted mt-2">{{ user['alamat'] }}</div>
+        </div>
+        <div class="col-md-8">
+            <table class="table">
+                <tr>
+                    <th>Nama Lengkap</th>
+                    <td>{{ user['nama_lengkap'] }}</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>{{ user['email'] }}</td>
+                </tr>
+                <tr>
+                    <th>Alamat</th>
+                    <td>{{ user['alamat'] }}</td>
+                </tr>
+                <tr>
+                    <th>Tempat Lahir</th>
+                    <td>{{ user['tempat_lahir'] }}</td>
+                </tr>
+                <tr>
+                    <th>Tanggal Lahir</th>
+                    <td>{{ user['tanggal_lahir'] }}</td>
+                </tr>
+                <tr>
+                    <th>Pendidikan Terakhir</th>
+                    <td>{{ user['pendidikan'] }}</td>
+                </tr>
+            </table>
+            <a href="{{ url_for('edit_profil') }}" class="btn btn-primary mt-3">Edit</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

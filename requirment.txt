@@ -1,0 +1,9 @@
+Flask
+Werkzeug
+numpy
+scikit-learn
+pandas
+pdfkit
+openpyxl
+python-dateutil
+flask-login

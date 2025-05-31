@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Tambah Data Training</h2>
+  <form method="post">
+    <div class="mb-3">
+      <label>Berat Badan (kg):</label>
+      <input type="number" name="bb" step="0.01" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label>Tinggi Badan (cm):</label>
+      <input type="number" name="tb" step="0.01" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label>LILA (cm):</label>
+      <input type="number" name="lila" step="0.01" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label>Status Gizi:</label>
+      <select name="status" class="form-control" required>
+        <option value="buruk">Buruk</option>
+        <option value="kurang">Kurang</option>
+        <option value="normal">Normal</option>
+        <option value="lebih">Lebih</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Simpan</button>
+    <a href="{{ url_for('kelola_dataset_training') }}" class="btn btn-secondary">Kembali</a>
+  </form>
+</div>
+{% endblock %}
